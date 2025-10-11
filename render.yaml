@@ -7,7 +7,7 @@ services:
     source:
       repo: https://github.com/SouraCode/social-media
       branch: main
-      path: backend
+      dir: backend
     envVars:
       - key: MONGO_URI
         sync: false
@@ -24,7 +24,7 @@ services:
     source:
       repo: https://github.com/SouraCode/social-media
       branch: main
-      path: frontend
+      dir: frontend
     envVars:
       - key: VITE_API_URL
         value: https://social-media-backend.onrender.com/api
