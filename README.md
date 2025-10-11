@@ -14,7 +14,7 @@ A full-stack social media application built with React (frontend) and Node.js/Ex
 
 - **Frontend:** React, TypeScript, Vite, Tailwind CSS
 - **Backend:** Node.js, Express.js, MongoDB, JWT
-- **Deployment:** Vercel (frontend), Railway/Docker (backend)
+- **Deployment:** Render (frontend and backend)
 
 ## Getting Started
 
@@ -68,26 +68,39 @@ A full-stack social media application built with React (frontend) and Node.js/Ex
 
 ## Deployment
 
-### Frontend (Vercel)
+### Using Render (Recommended for Monorepo)
 
 1. Push your code to GitHub.
-2. Connect your GitHub repo to Vercel.
-3. Vercel will automatically detect the Vite project and deploy it.
-4. Update the API base URL in `frontend/src/lib/api.ts` to point to your deployed backend.
+2. In Render dashboard, connect your repo and use the `render.yaml` file for automatic service setup.
+3. Set environment variables in Render:
+   - Backend: MONGO_URI, JWT_SECRET, NODE_ENV=production
+   - Frontend: VITE_API_URL=https://your-backend-service.onrender.com/api
+4. Deploy both services. Render will handle builds and scaling.
 
-### Backend (Railway)
+### Manual Setup (Alternative)
 
-1. Create a Railway account and project.
-2. Connect your GitHub repo.
-3. Set environment variables in Railway dashboard:
-   - `MONGO_URI`
-   - `JWT_SECRET`
-   - `NODE_ENV=production`
-4. Deploy.
+#### Frontend (Render)
 
-### Backend (Docker)
+1. Create a new Static Site in Render dashboard.
+2. Connect GitHub repo, root directory: `frontend`.
+3. Build Command: `npm run build`.
+4. Publish Directory: `dist`.
+5. Set VITE_API_URL to your backend URL.
+6. Deploy.
 
-If using Docker:
+#### Backend (Render)
+
+1. Create a new Web Service.
+2. Connect GitHub repo, root directory: `backend`.
+3. Runtime: Node.
+4. Build Command: `npm install`.
+5. Start Command: `npm start`.
+6. Set env vars: MONGO_URI, JWT_SECRET, NODE_ENV=production.
+7. Deploy.
+
+### Alternative: Docker
+
+If using Docker for backend:
 
 1. Build the image:
    ```bash
