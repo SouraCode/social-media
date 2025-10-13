@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const Post = require('../models/Post');
 const Like = require('../models/Like');
 const Comment = require('../models/Comment');
@@ -13,7 +14,11 @@ const router = express.Router();
 // Multer setup for image upload
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    const uploadsAbsolute = path.join(__dirname, '..', 'uploads');
+    if (!fs.existsSync(uploadsAbsolute)) {
+      fs.mkdirSync(uploadsAbsolute, { recursive: true });
+    }
+    cb(null, uploadsAbsolute);
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));
@@ -122,7 +127,8 @@ router.get('/', auth, async (req, res) => {
 // Create post
 router.post('/', auth, upload.single('image'), async (req, res) => {
   const { caption } = req.body;
-  const image_url = req.file ? `http://localhost:5000/uploads/${req.file.filename}` : '';
+  const baseUrl = `${req.protocol}://${req.get('host')}`;
+  const image_url = req.file ? `${baseUrl}/uploads/${req.file.filename}` : '';
 
   try {
     const post = new Post({

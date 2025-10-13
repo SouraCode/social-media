@@ -2,19 +2,32 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
 
+// Ensure correct protocol/host detection behind proxies (e.g., Render)
+app.set('trust proxy', 1);
+
 // Middleware
-app.use(cors());
+app.use(cors({ origin: process.env.CLIENT_ORIGIN || '*'}));
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use('/uploads', express.static(uploadsDir));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/pixelgram')
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
+
+// Health check
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
