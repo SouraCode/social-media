@@ -5,7 +5,7 @@ import { Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 export function Profile() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const {
     data,
     fetchNextPage,
@@ -55,10 +55,18 @@ export function Profile() {
     }
   };
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
       <div className="flex justify-center items-center py-12">
         <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="text-center py-12 text-slate-500">
+        <p className="text-lg">Please log in to view your profile.</p>
       </div>
     );
   }
