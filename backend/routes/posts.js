@@ -123,6 +123,12 @@ router.get('/', auth, async (req, res) => {
 
     const posts = await Post.aggregate(pipeline);
 
+    console.log('Posts result:', { 
+      postsCount: posts.length,
+      userIdFilter,
+      pipelineLength: pipeline.length 
+    });
+
     res.json(posts);
   } catch (err) {
     console.error('Get posts error:', err);
