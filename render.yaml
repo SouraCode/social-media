@@ -1,13 +1,10 @@
 services:
   - type: web
     name: social-media-backend
-    runtime: node
+    env: node
+    rootDir: backend
     buildCommand: npm install
     startCommand: npm start
-    source:
-      repo: https://github.com/SouraCode/social-media
-      branch: main
-      dir: backend
     envVars:
       - key: MONGO_URI
         sync: false
@@ -20,13 +17,10 @@ services:
 
   - type: web
     name: social-media-frontend
-    runtime: static
+    env: static
+    rootDir: frontend
     buildCommand: npm run build
-    staticPublishPath: ./dist
-    source:
-      repo: https://github.com/SouraCode/social-media
-      branch: main
-      dir: frontend
+    staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
         value: https://social-media-backend.onrender.com/api
