@@ -20,6 +20,7 @@ export function usePosts(userId?: string) {
     },
     getNextPageParam: (lastPage) => lastPage.nextPage,
     initialPageParam: 0,
+    enabled: userId !== undefined, // Only fetch when userId is defined
   });
 
   const toggleLike = useMutation({

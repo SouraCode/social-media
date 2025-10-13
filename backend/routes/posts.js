@@ -34,6 +34,12 @@ router.get('/', auth, async (req, res) => {
     const offset = parseInt(req.query.offset) || 0;
     const userIdFilter = req.query.userId ? new mongoose.Types.ObjectId(req.query.userId) : null;
 
+    console.log('Posts request:', { 
+      userIdFilter, 
+      requestingUserId: req.user.id,
+      queryUserId: req.query.userId 
+    });
+
     const UserId = new mongoose.Types.ObjectId(req.user.id);
     const pipeline = [];
 
