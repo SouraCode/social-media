@@ -34,18 +34,14 @@ router.get('/', auth, async (req, res) => {
     const offset = parseInt(req.query.offset) || 0;
     const userIdFilter = req.query.userId ? new mongoose.Types.ObjectId(req.query.userId) : null;
 
-    console.log('Posts request:', { 
-      userIdFilter, 
-      requestingUserId: req.user.id,
-      queryUserId: req.query.userId 
-    });
-
     const UserId = new mongoose.Types.ObjectId(req.user.id);
     const pipeline = [];
 
+    // If userId is provided, filter by that user
     if (userIdFilter) {
       pipeline.push({ $match: { user_id: userIdFilter } });
     }
+    // If no userId, show all posts (no $match stage)
 
     pipeline.push(
       {
@@ -122,12 +118,6 @@ router.get('/', auth, async (req, res) => {
     );
 
     const posts = await Post.aggregate(pipeline);
-
-    console.log('Posts result:', { 
-      postsCount: posts.length,
-      userIdFilter,
-      pipelineLength: pipeline.length 
-    });
 
     res.json(posts);
   } catch (err) {

@@ -15,7 +15,7 @@ export function Profile() {
     toggleLike,
     toggleBookmark,
     deletePost,
-  } = usePosts(user?.id);
+  } = usePosts(user?.id); // Pass user ID to filter posts
 
   const observerTarget = useRef<HTMLDivElement>(null);
 

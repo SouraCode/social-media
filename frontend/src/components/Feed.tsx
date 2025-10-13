@@ -2,8 +2,10 @@ import { useEffect, useRef } from 'react';
 import { usePosts } from '../hooks/usePosts';
 import { PostCard } from './PostCard';
 import { Loader2 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 export function Feed() {
+  const { user, loading: authLoading } = useAuth();
   const {
     data,
     fetchNextPage,
@@ -13,7 +15,7 @@ export function Feed() {
     toggleLike,
     toggleBookmark,
     deletePost,
-  } = usePosts();
+  } = usePosts(); // No userId for feed - shows all posts
 
   const observerTarget = useRef<HTMLDivElement>(null);
 
@@ -53,10 +55,18 @@ export function Feed() {
     }
   };
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
       <div className="flex justify-center items-center py-12">
         <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="text-center py-12 text-slate-500">
+        <p className="text-lg">Please log in to view posts.</p>
       </div>
     );
   }

@@ -8,7 +8,7 @@ export function usePosts(userId?: string) {
   const queryClient = useQueryClient();
 
   const query = useInfiniteQuery({
-    queryKey: ['posts', userId],
+    queryKey: ['posts', userId || 'all'],
     queryFn: async ({ pageParam = 0 }) => {
       const offset = pageParam * POSTS_PER_PAGE;
       const posts = await postsAPI.getPosts(POSTS_PER_PAGE, offset, userId);
