@@ -20,8 +20,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      loadCurrentUser();
+    const savedUser = localStorage.getItem('user');
+    
+    if (token && savedUser) {
+      try {
+        // Set user immediately from localStorage to prevent flash
+        const userData = JSON.parse(savedUser);
+        setUser(userData);
+        
+        // Then verify with server
+        loadCurrentUser();
+      } catch (error) {
+        console.error('Error parsing saved user:', error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setLoading(false);
+      }
     } else {
       setLoading(false);
     }
@@ -31,10 +45,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const userData = await authAPI.getCurrentUser();
       setUser(userData);
+      // Update localStorage with fresh data
+      localStorage.setItem('user', JSON.stringify(userData));
     } catch (error) {
       console.error('Error loading current user:', error);
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      // Only clear if it's an auth error, not a network error
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setUser(null);
+      }
     } finally {
       setLoading(false);
     }

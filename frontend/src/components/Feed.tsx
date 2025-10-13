@@ -59,6 +59,7 @@ export function Feed() {
     return (
       <div className="flex justify-center items-center py-12">
         <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+        <span className="ml-2 text-slate-500">Loading posts...</span>
       </div>
     );
   }
@@ -67,6 +68,7 @@ export function Feed() {
     return (
       <div className="text-center py-12 text-slate-500">
         <p className="text-lg">Please log in to view posts.</p>
+        <p className="text-sm mt-2">Refresh the page if you're already logged in.</p>
       </div>
     );
   }
